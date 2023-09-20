@@ -16,9 +16,10 @@ class AuthController extends Controller
 
 
               $validatedData = $request->validate([
-                     'name' => 'required',
-                     'email' => 'required',
-                     'password' => 'required',
+                     
+                     'name'=>'required|string',
+                     'email'=>'required|string|unique:users,email',
+                     'password' => 'required|string|confirmed',
                      'phone' => 'required',
               ]);
 
@@ -40,7 +41,14 @@ class AuthController extends Controller
        }
        public function login(Request $request)
        {
-              if (!Auth::attempt($request->only('email', 'password'))) {
+
+
+                 $loginData = $request->validate([
+                     'email' => 'email|required',
+                     'password' => 'required'
+                 ]);
+
+              if (!Auth::attempt($loginData)) {
                      return response()->json([
                             'message' => 'Invalid login details'
                      ], 401);

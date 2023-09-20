@@ -45,4 +45,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function permissions() {
+        return $this->belongsToMany(permission::class , 'user_permissions');
+    }
+    public function products() {
+        return $this->hasMany(Product::class , 'user_id','id');
+    }
 }
