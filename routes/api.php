@@ -38,10 +38,14 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // email verificationn otification
 
+
 Route::post('/email/verification-notification', [EmailVerificationController::class, 'sendVerificationEmail'])->middleware('auth:sanctum');
 Route::get('/verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify')->middleware('auth:sanctum');
 
 // product crud 
 Route::middleware(['auth:sanctum'])->group(function () {
 Route::resource('/products', ProductController::class);
+Route::post('/image',[ProductController::class, 'imageStore']);
+Route::delete('/force_delete_product/{id}',[ProductController::class, 'forceDelete']);
+Route::get('/trached_product',[ProductController::class, 'onlyTrachedProduct']);
 });

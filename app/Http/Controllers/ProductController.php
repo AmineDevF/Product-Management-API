@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -15,12 +17,11 @@ class ProductController extends Controller
     public function index()
     {
         $this->authorize('create',Product::class);
-        $products = Product::all();
+        $products = Product::paginate(2);
+        // $products = Product::withTrashed()->get();
+
+        return response()->json( $products);
         
-        return response()->json( $products);;
-        
-        // return view('products.index',compact('products'))
-        //             ->with('i', (request()->input('page', 1) - 1) * 5);
     }
   
     /**
@@ -34,33 +35,41 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        $request->validate([
+        // dd($request);
+        $this->validate($request, [
+            'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'name' => 'required',
             'detail' => 'required',
+            'prix' => 'required',
+            'quantite' => 'required',
         ]);
-        
-        Product::create($request->all());
-         
-        return redirect()->route('products.index')
-                        ->with('success','Product created successfully.');
+        $image_path = $request->file('image')->store('image', 'public');
+ 
+        $data = Product::create([  
+            'image' => $image_path,
+            'name' => $request->name,
+            'prix' => $request->prix,  
+            'detail' => $request->detail,
+            'quantite' => $request->quantite,
+            
+        ]);
+
+        return response()->json($data);
     }
+
+
   
     /**
      * Display the specified resource.
      */
-    public function show(Product $product): View
+    public function show(Product $product)
     {
-        return view('products.show',compact('product'));
+        return response()->json($product);
     }
 
-    public function softDelet() {
-        // Implement the ability to delete products 
-        $delePro = Product::destroy();
-        return view("product was deleted successfuly",compact('product'));
-    }
-  
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -72,27 +81,70 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product): RedirectResponse
+    public function update(Request $request, Product $product) 
     {
+       
         $request->validate([
+
+            // 'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'name' => 'required',
             'detail' => 'required',
+            'prix' => 'required',
+            'quantite' => 'required',
         ]);
         
-        $product->update($request->all());
-        
-        return redirect()->route('products.index')
-                        ->with('success','Product updated successfully');
-    }
+
+        $input = $request->all();
+
+
+        if ($image = $request->file('image')) {
+
+            $destinationPath = 'image/';
+
+            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+
+            $image->move($destinationPath, $profileImage);
+
+            $input['image'] = "$profileImage";
+
+        }else{
+
+            unset($input['image']);
+
+        }
+          
+        $product->update($input); 
+
+
+        return response()->json($product);
+
+ }
   
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product): RedirectResponse
+    public function destroy(Product $product)
     {
+        
         $product->delete();
          
-        return redirect()->route('products.index')
-                        ->with('success','Product deleted successfully');
+        return response()->json(["product was deleted successfully",$product]);
+    }
+
+    public function forceDelete($id)
+    {
+        $product = Product::find($id);
+       
+        
+        $product->forcedelete();
+         
+        return response()->json($product);
+    }
+    public function onlyTrachedProduct()
+    {
+        $product = Product::onlyTrashed()->get();
+       
+         
+        return response()->json($product);
     }
 }

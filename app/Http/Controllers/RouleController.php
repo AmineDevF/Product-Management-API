@@ -38,7 +38,7 @@ class RouleController extends Controller
     public function createProfeil(Request $request)
     {
        
-        $this->authorize('admin', Product::class);
+        // $this->authorize('admin', Product::class);
         $validatedData = $request->validate([
             'user_id' => 'required',
             'permission_id' => 'required',
