@@ -117,11 +117,28 @@ class CartController extends Controller
 
             //check if the the same product is already in the Cart, if true update the quantity, if not create a new one.
             $cartItem = CartItem::where(['cart_id' => $cart->getKey(), 'product_id' => $productID])->first();
+            $product = Product::where([ 'id' => $productID])->first();
+            // dd($product->quantite);
             if ($cartItem) {
                 $cartItem->quantity = $quantity;
-                CartItem::where(['cart_id' => $cart->getKey(), 'product_id' => $productID])->update(['quantity' => $quantity]);
+                if($product->quantite >= $quantity){
+
+                    CartItem::where(['cart_id' => $cart->getKey(), 'product_id' => $productID])->update(['quantity' => $quantity]);
+                }else {
+                    return response()->json([
+                        'message' => ' ops! The Product quantity not available in stock .  ',
+                    ], 404);
+                }
+
             } else {
-                CartItem::create(['cart_id' => $cart->getKey(), 'product_id' => $productID, 'quantity' => $quantity]);
+                if($product->quantite >= $quantity){
+
+                    CartItem::create(['cart_id' => $cart->getKey(), 'product_id' => $productID, 'quantity' => $quantity]);
+                }else{
+                    return response()->json([
+                        'message' => ' ops! The Product quantity not available in stock .  ',
+                    ], 404);
+                }
             }
 
             return response()->json(['message' => 'The Cart was updated with the given product information successfully'], 200);
@@ -178,7 +195,7 @@ class CartController extends Controller
             foreach ($items as $item) {
 
                 $product = Product::find($item->product_id);
-                $price = $product->price;
+                $price = $product->prix;
                 $inStock = $product->quantite;
                 if ($inStock >= $item->quantity) {
 

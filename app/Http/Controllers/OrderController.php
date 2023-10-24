@@ -32,7 +32,7 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        dd($order);
+        // dd($order);
         if($order->userID == auth()->id()){
              return new OrderResource($order);
          }else{
