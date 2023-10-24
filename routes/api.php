@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\EmailVerificationController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RouleController;
 use Illuminate\Http\Request;
@@ -49,3 +51,10 @@ Route::post('/image',[ProductController::class, 'imageStore']);
 Route::delete('/force_delete_product/{id}',[ProductController::class, 'forceDelete']);
 Route::get('/trached_product',[ProductController::class, 'onlyTrachedProduct']);
 });
+
+// cart  && order
+
+Route::apiResource('carts', CartController::class)->except(['update', 'index']);
+Route::apiResource('orders', OrderController::class)->except(['update', 'destroy','store'])->middleware('auth:api');
+Route::post('/cartspro/', [ CartController::class ,'addProducts']);
+Route::post('/carts/{cartKey}/checkout', [CartController::class, 'checkout']);
