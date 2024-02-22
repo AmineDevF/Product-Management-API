@@ -20,7 +20,8 @@ class ProductController extends Controller
         $products = Product::paginate(2);
         // $products = Product::withTrashed()->get();
 
-        return response()->json( $products);
+        // return response()->json( $products);
+        return view('products.index',compact('products'));
         
     }
   

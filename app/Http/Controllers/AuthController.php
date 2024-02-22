@@ -10,6 +10,23 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+       public function index()
+       {
+           return view("users.index");
+       }
+       public function admin()
+       {
+           return view("admin.index");
+       }
+       public function registerurl()
+       {
+           return view("auth.register");
+       }
+       public function loginurl()
+       {
+           return view("auth.login");
+       }
+       
 
        public function register(Request $request)
        {

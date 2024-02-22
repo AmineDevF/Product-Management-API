@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 
 class RouleController extends Controller
 {
+
     public function dashboard()
     {
         $this->authorize('admin', Product::class);
