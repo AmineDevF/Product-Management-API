@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CarteController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,7 +25,18 @@ Route::post('/registerform', [AuthController::class, 'register'])->name('registe
 Route::post('/loginform', [AuthController::class, 'login'])->name('login.form');
 Route::get('/register', [AuthController::class, 'registerurl'])->name('register');
 Route::get('/login', [AuthController::class, 'loginurl'])->name('login');
-
+Route::get('/shop',[ShopController::class,'index'])->name('shop.index');
+Route::get('/product/{slug}',[ShopController::class,'productDetials'])->name('shop.product.details');
+Route::get('/cart-wishlist-count',[ShopController::class,'getCartAndWishlistCount'])->name('shop.cart.wishlist.count');
+Route::get('/cart',[CarteController::class,'index'])->name('cart.index');
+Route::post('/cart/store', [CarteController::class, 'addToCart'])->name('cart.store');
+Route::put('/cart/update', [CarteController::class, 'updateCart'])->name('cart.update');
+Route::delete('/cart/remove', [CarteController::class, 'removeItem'])->name('cart.remove');
+// Route::delete('/cart/remove', [CarteController::class, 'removeItem'])->name('cart.remove');
+Route::post('/wishlist/add',[WishlistController::class,'addProductToWishlist'])->name('wishlist.store');
+Route::get('/wishlist',[WishlistController::class,'getWishlistedProducts'])->name('wishlist.list');
+Route::delete('/wishlist/remove',[WishlistController::class,'removeProductFromWishlist'])->name('wishlist.remove');
+Route::delete('/wishlist/clear',[WishlistController::class,'clearWishlist'])->name('wishlist.clear');
 // Route::view('/login',"auth.login")->name('login');
 // Route::view('/register',"welcome")->name('register');
 

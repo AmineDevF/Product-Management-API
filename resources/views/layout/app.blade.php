@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -117,8 +116,7 @@
                             <div class="menu-left">
                                 <div class="brand-logo">
                                     <a href="{{route('app.index')}}">
-                                        <img src="{{asset('assets/images/logo.png')}}" class="h-logo img-fluid blur-up lazyload"
-                                            alt="logo">
+                                        <img src="{{asset('assets/images/logo.png')}}" class="h-logo img-fluid blur-up lazyload" alt="logo">
                                     </a>
                                 </div>
 
@@ -138,8 +136,8 @@
                                                 </div>
                                             </li>
                                             <li><a href="{{route('app.index')}}" class="nav-link menu-title">Home</a></li>
-                                            <li><a href="shop.html" class="nav-link menu-title">Shop</a></li>
-                                            <li><a href="cart.html" class="nav-link menu-title">Cart</a></li>
+                                            <li><a href="{{route('shop.index')}}" class="nav-link menu-title">Shop</a></li>
+                                            <li><a href="{{route('cart.index')}}" class="nav-link menu-title">Cart</a></li>
                                             <li><a href="about-us.html" class="nav-link menu-title">About Us</a></li>
                                             <li><a href="contact-us.html" class="nav-link menu-title">Contact Us</a>
                                             </li>
@@ -157,59 +155,59 @@
                                     </li>
                                     <li class="onhover-dropdown wislist-dropdown">
                                         <div class="cart-media">
-                                            <a href="wishlist/list.html">
+                                            <a href="{{route('wishlist.list')}}">
                                                 <i data-feather="heart"></i>
                                                 <span id="wishlist-count" class="label label-theme rounded-pill">
-                                                    0
+                                                    {{Cart::instance('wishlist')->content()->count()}}
                                                 </span>
                                             </a>
                                         </div>
                                     </li>
                                     <li class="onhover-dropdown wislist-dropdown">
                                         <div class="cart-media">
-                                            <a href="cart/list.html">
+                                            <a href="{{route('cart.index')}}">
                                                 <i data-feather="shopping-cart"></i>
                                                 <span id="cart-count" class="label label-theme rounded-pill">
-                                                    0
+                                                    {{Cart::instance('cart')->content()->count()}}
                                                 </span>
                                             </a>
                                         </div>
                                     </li>
                                     <li class="onhover-dropdown">
-    <div class="cart-media name-usr">
-        @auth <span>{{ Auth::user()->name }}</span> @endauth <i data-feather="user"></i>
-    </div>
-    <div class="onhover-div profile-dropdown">
-        <ul>
-            @if(Route::has('login'))
-                @auth
-                    @if(Auth::user()->role === 'admin')
-                        <li>
-                            <a href="{{route('admin.index')}}" class="d-block">Dashboard</a>
-                        </li>
-                    @else
-                        <li>
-                            <a href="{{route('user.index')}}" class="d-block">My Account</a>
-                        </li>
-                    @endif
-                    <li>
-                        <a href="{{route('logout')}}" onclick="event.preventDefault();document.getElementById('frmlogout').submit();" class="d-block">Logout</a>
-                        <form id="frmlogout" action="{{route('logout')}}" method="POST">
-                            @csrf
-                        </form>
-                    </li>
-                @else
-                    <li>
-                        <a href="{{route('login')}}" class="d-block">Login</a>
-                    </li>
-                    <li>
-                        <a href="{{route('register')}}" class="d-block">Register</a>
-                    </li>
-                @endauth                                                    
-            @endif
-        </ul>
-    </div>
-</li>
+                                        <div class="cart-media name-usr">
+                                            @auth <span>{{ Auth::user()->name }}</span> @endauth <i data-feather="user"></i>
+                                        </div>
+                                        <div class="onhover-div profile-dropdown">
+                                            <ul>
+                                                @if(Route::has('login'))
+                                                @auth
+                                                @if(Auth::user()->role === 'admin')
+                                                <li>
+                                                    <a href="{{route('admin.index')}}" class="d-block">Dashboard</a>
+                                                </li>
+                                                @else
+                                                <li>
+                                                    <a href="{{route('user.index')}}" class="d-block">My Account</a>
+                                                </li>
+                                                @endif
+                                                <li>
+                                                    <a href="{{route('logout')}}" onclick="event.preventDefault();document.getElementById('frmlogout').submit();" class="d-block">Logout</a>
+                                                    <form id="frmlogout" action="{{route('logout')}}" method="POST">
+                                                        @csrf
+                                                    </form>
+                                                </li>
+                                                @else
+                                                <li>
+                                                    <a href="{{route('login')}}" class="d-block">Login</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{route('register')}}" class="d-block">Register</a>
+                                                </li>
+                                                @endauth
+                                                @endif
+                                            </ul>
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
                             <div class="search-full">
@@ -218,8 +216,7 @@
                                         <span class="input-group-text">
                                             <i data-feather="search" class="font-light"></i>
                                         </span>
-                                        <input type="text" name="q" class="form-control search-type"
-                                            placeholder="Search here..">
+                                        <input type="text" name="q" class="form-control search-type" placeholder="Search here..">
                                         <span class="input-group-text close-search">
                                             <i data-feather="x" class="font-light"></i>
                                         </span>
@@ -248,7 +245,7 @@
                 </a>
             </li>
             <li>
-                <a href="javascript:void(0)">
+                <a href="{{route('cart.index')}}">
                     <i data-feather="shopping-bag"></i>
                     <span>Cart</span>
                 </a>
@@ -280,8 +277,7 @@
                         <div class="footer-contact">
                             <div class="brand-logo">
                                 <a href="{{route('app.index')}}" class="footer-logo float-start">
-                                    <img src="{{asset('assets/images/logo.png')}}" class="f-logo img-fluid blur-up lazyload"
-                                        alt="logo">
+                                    <img src="{{asset('assets/images/logo.png')}}" class="f-logo img-fluid blur-up lazyload" alt="logo">
                                 </a>
                             </div>
                             <ul class="contact-lists" style="clear:both;">
@@ -309,7 +305,7 @@
                                         <a href="{{route('app.index')}}" class="font-dark">Home</a>
                                     </li>
                                     <li>
-                                        <a href="shop.html" class="font-dark">Shop</a>
+                                        <a href="{{route('shop.index')}}" class="font-dark">Shop</a>
                                     </li>
                                     <li>
                                         <a href="about-us.html" class="font-dark">About Us</a>
@@ -350,8 +346,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                        <div class="footer-links">
+                    <!-- <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6"> -->
+                        <!-- <div class="footer-links">
                             <div class="footer-title">
                                 <h3>Get Help</h3>
                             </div>
@@ -375,15 +371,14 @@
                                 </ul>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-4 col-sm-6 d-none d-sm-block">
+                    </div> -->
+                    <div class="col-xl-4 col-lg-4 col-sm-6 d-none d-sm-block">
                         <div class="footer-newsletter">
                             <h3>Let’s stay in touch</h3>
                             <div class="form-newsletter">
                                 <div class="input-group mb-4">
                                     <input type="text" class="form-control color-4" placeholder="Your Email Address">
-                                    <span class="input-group-text" id="basic-addon4"><i
-                                            class="fas fa-arrow-right"></i></span>
+                                    <span class="input-group-text" id="basic-addon4"><i class="fas fa-arrow-right"></i></span>
                                 </div>
                                 <p class="font-dark mb-0">Keep up to date with our latest news and special offers.
                                 </p>
@@ -401,38 +396,34 @@
                             <li class="font-dark">We accept:</li>
                             <li>
                                 <a href="javascript:void(0)">
-                                    <img src="assets/images/payment-icon/1.jpg" class="img-fluid blur-up lazyload"
-                                        alt="payment icon">
+                                    <img src="assets/images/payment-icon/1.jpg" class="img-fluid blur-up lazyload" alt="payment icon">
                                 </a>
                             </li>
                             <li>
                                 <a href="javascript:void(0)">
-                                    <img src="assets/images/payment-icon/2.jpg" class="img-fluid blur-up lazyload"
-                                        alt="payment icon">
+                                    <img src="assets/images/payment-icon/2.jpg" class="img-fluid blur-up lazyload" alt="payment icon">
                                 </a>
                             </li>
                             <li>
                                 <a href="javascript:void(0)">
-                                    <img src="assets/images/payment-icon/3.jpg" class="img-fluid blur-up lazyload"
-                                        alt="payment icon">
+                                    <img src="assets/images/payment-icon/3.jpg" class="img-fluid blur-up lazyload" alt="payment icon">
                                 </a>
                             </li>
                             <li>
                                 <a href="javascript:void(0)">
-                                    <img src="assets/images/payment-icon/4.jpg" class="img-fluid blur-up lazyload"
-                                        alt="payment icon">
+                                    <img src="assets/images/payment-icon/4.jpg" class="img-fluid blur-up lazyload" alt="payment icon">
                                 </a>
                             </li>
                         </ul>
                     </div>
                     <div class="col-md-6">
-                        <p class="mb-0 font-dark">© 2023, Surfside Media.</p>
+                        <p class="mb-0 font-dark">© 2024, Youcode coine.</p>
                     </div>
                 </div>
             </div>
         </div>
     </footer>
-  
+
     <div class="tap-to-top">
         <a href="#home">
             <i class="fas fa-chevron-up"></i>
@@ -455,11 +446,12 @@
     <script src="{{ asset('assets/js/theme-setting.js') }}"></script>
     <script src="{{ asset('assets/js/script.js') }}"></script>
     <script>
-        $(function () {
+        $(function() {
             $('[data-bs-toggle="tooltip"]').tooltip()
         });
     </script>
     @stack('scripts')
 
 </body>
+
 </html>
