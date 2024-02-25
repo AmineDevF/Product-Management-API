@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/',[AppController::class,'index'])->name('app.index');
+Route::get('/test',[AppController::class,'test'])->name('app.test');
 
 Route::post('/registerform', [AuthController::class, 'register'])->name('register.form');
 Route::post('/loginform', [AuthController::class, 'login'])->name('login.form');
@@ -37,6 +38,7 @@ Route::post('/wishlist/add',[WishlistController::class,'addProductToWishlist'])-
 Route::get('/wishlist',[WishlistController::class,'getWishlistedProducts'])->name('wishlist.list');
 Route::delete('/wishlist/remove',[WishlistController::class,'removeProductFromWishlist'])->name('wishlist.remove');
 Route::delete('/wishlist/clear',[WishlistController::class,'clearWishlist'])->name('wishlist.clear');
+Route::post('/wishlist/move-to-cart',[WishlistController::class,'moveToCart'])->name('wishlist.move.to.cart');
 // Route::view('/login',"auth.login")->name('login');
 // Route::view('/register',"welcome")->name('register');
 

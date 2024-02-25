@@ -85,6 +85,7 @@ class ShopController extends Controller
  public function getCartAndWishlistCount() {
     $cartCount = Cart::instance('cart')->content()->count();
     $wishlistCount = Cart::instance('wishlist')->content()->count();
+    
     return response()->json(["status"=>200,"cartCount"=>$cartCount ,"wishlistCount"=>$wishlistCount]);
  }
 

@@ -168,7 +168,7 @@
 
                                     <h6 class="product-title product-title-2 d-block">quantity</h6>
 
-                                    <div class="qty-box">
+                                    <!-- <div class="qty-box">
                                         <div class="input-group">
                                             <span class="input-group-prepend">
                                                 <button type="button" class="btn quantity-left-minus" data-type="minus" data-field="">
@@ -182,6 +182,11 @@
                                                 </button>
                                             </span>
                                         </div>
+                                    </div> -->
+                                    <div class="qty-box">
+                                        <div class="input-group">
+                                            <input id="prdQtity" type="number" name="quantity"  min="1"  class="form-control input-number" value="1">
+                                        </div>
                                     </div>
                                 </div>
 
@@ -190,14 +195,16 @@
                                         <i class="fa fa-bookmark fz-16 me-2"></i>
                                         <span>Wishlist</span>
                                     </a>
-                                    <a href="javascript:void(0)" onclick="event.preventDefault();document.getElementById('addtocart').submit();" id="cartEffect" class="btn btn-solid hover-solid btn-animation">
+                                    <!-- <a href="javascript:void(0)" onclick="event.preventDefault();document.getElementById('addtocart').submit();" id="cartEffect" class="btn btn-solid hover-solid btn-animation"> -->
+                                    <a href="javascript:void(0)" onclick="addProductToCart({{$product->id}},'{{$product->name}}',{{$product->regular_price}})" id="cartEffect" class="btn btn-solid hover-solid btn-animation">
+                                    <!-- <a href="javascript:void(0)" onclick="addProductToCart({{$product->id}},'{{$product->name}}',1,{{$product->regular_price}})" class="addtocart-btn"> -->
                                         <i class="fa fa-shopping-cart"></i>
                                         <span>Add To Cart</span>
-                                        <form id="addtocart" method="post" action="{{route('cart.store')}}">
+                                        <!-- <form id="addtocart" method="post" action="{{route('cart.store')}}">
                                             @csrf
                                             <input type="hidden" name="id" value="{{$product->id}}">
                                             <input type="hidden" name="quantity" id="qty" value="1">
-                                        </form>
+                                        </form> -->
                                     </a>
 
                                 </div>
@@ -845,4 +852,59 @@
     </div>
 </section>
 <!-- product section end -->
+<!-- <form id="updateCartQty" action="{{route('cart.update')}}" method="POST">
+    @csrf
+    @method('put')
+    <input type="hidden" id="rowId" name="rowId" />
+    <input type="hidden" id="quantity" name="quantity" />
+</form> -->
+
+
 @endsection
+@push('scripts')
+<script>
+    // function updateQuantity() {
+    //     // $('#rowId').val($(qty).data('rowid'));
+    //     $('#quantity').val();
+    //     // $('#updateCartQty').submit();
+    // }
+
+    function addProductToCart(id, name, price) {
+                        $.ajax({
+                            type: 'POST',
+                            url: "{{route('cart.store')}}",
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                id: id,
+                                name: name,
+                                quantity:document.getElementById('prdQtity').value,
+                                price: price
+                            },
+                            success: function(data) {
+                                if (data.status == 200) {
+                                    getCartWishlistCount();
+                                    $.notify({
+                                        icon: "fa fa-check",
+                                        title: "success",
+                                        message: "item successfully added to your cart !"
+                                    });
+                                }
+                            }
+                        });
+                    }
+
+                    function getCartWishlistCount() {
+                        $.ajax({
+                            type: 'GET',
+                            url: "{{route('shop.cart.wishlist.count')}}",
+                            success: function(data) {
+                                if (data.status == 200) {
+                                    $("#cart-count").html(data.cartCount);
+                                    $("#wishlist-count").html(data.wishlistCount);
+                                }
+                            }
+                        });
+                    }
+
+</script>
+@endpush

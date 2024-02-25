@@ -64,7 +64,8 @@
                                     <div class="col">
                                         <div class="qty-box">
                                             <div class="input-group">
-                                                <input type="number" name="quantity" data-rowid="{{$item->rowId}}" onchange="updateQuantity(this)" class="form-control input-number" value="{{$item->qty}}">
+                                                <!-- <input type="number" id="newprdqtity" name="quantity"  onchange="updateQuantity({{$item->rowId}})" class="form-control input-number" value=""> -->
+                                                <input type="number" id="newprdqtity" name="quantity" data-rowid="{{$item->rowId}}" onchange="updateQuantity(this)" class="form-control input-number" value="{{$item->qty}}">
                                             </div>
                                         </div>
                                     </div>
@@ -196,6 +197,50 @@
         {
             $('#rowId_D').val(rowId);
             $('#deleteFromCart').submit();
-        }       
+        }  
+        // function updateQuantity(qty) {
+        //     console.log(document.getElementById('newprdqtity').value);
+        //     console.log(qty);
+            
+                        // $.ajax({
+                        //     type: 'POST',
+                        //     url: "{{route('cart.update')}}",
+                        //     data: {
+                        //         "_token": "{{ csrf_token() }}",
+                        //         rowId: 1,
+                        //         quantity: 2,
+                        //     },
+                        //     success: function(data) {
+                        //         console.log(data);
+                        //         if (data.status == 200) {
+                        //             $("#cart-count").html(data.cartCount);
+                        //             $("#wishlist-count").html(data.wishlistCount);
+                        //         }
+                        //     }
+                        // });
+                    // }
+        
+    // function updateQuantity(id) {
+    //                     $.ajax({
+    //                         type: 'POST',
+    //                         url: "{{route('cart.update')}}",
+    //                         data: {
+    //                             "_token": "{{ csrf_token() }}",
+    //                             rowId: id,
+    //                             quantity: 2,
+    //                         },
+    //                         success: function(data) {
+    //                             console.log(data);
+    //                             // if (data.status == 200) {
+                                
+    //                             //     $.notify({
+    //                             //         icon: "fa fa-check",
+    //                             //         title: "success",
+    //                             //         message: "quantity successfully updated !"
+    //                             //     });
+    //                             // }
+    //                         }
+    //                     });
+    //                 }        
 </script>
 @endpush
