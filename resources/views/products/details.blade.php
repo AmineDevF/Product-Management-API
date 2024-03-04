@@ -120,7 +120,7 @@
                                 </h3>
 
                                 <div class="color-image">
-                                    <div class="image-select">
+                                    <!-- <div class="image-select">
                                         <h5>Color :</h5>
                                         <ul class="image-section">
                                             <li>
@@ -139,17 +139,17 @@
                                                 </a>
                                             </li>
                                         </ul>
-                                    </div>
+                                    </div> -->
                                 </div>
 
                                 <div id="selectSize" class="addeffect-section product-description border-product">
-                                    <h6 class="product-title size-text">select size
+                                    <!-- <h6 class="product-title size-text">select size
                                         <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#sizemodal">size chart</a>
                                     </h6>
 
-                                    <h6 class="error-message">please select size</h6>
+                                    <h6 class="error-message">please select size</h6> -->
 
-                                    <div class="size-box">
+                                    <!-- <div class="size-box">
                                         <ul>
                                             <li>
                                                 <a href="javascript:void(0)">s</a>
@@ -164,7 +164,7 @@
                                                 <a href="javascript:void(0)">xl</a>
                                             </li>
                                         </ul>
-                                    </div>
+                                    </div> -->
 
                                     <h6 class="product-title product-title-2 d-block">quantity</h6>
 
@@ -185,19 +185,19 @@
                                     </div> -->
                                     <div class="qty-box">
                                         <div class="input-group">
-                                            <input id="prdQtity" type="number" name="quantity"  min="1"  class="form-control input-number" value="1">
+                                            <input id="prdQtity" type="number" name="quantity" min="1" class="form-control input-number" value="1">
                                         </div>
                                     </div>
                                 </div>
-
+                                @if($product->stock_status=='instock')
                                 <div class="product-buttons">
-                                    <a href="javascript:void(0)" class="btn btn-solid">
+                                    <a href="javascript:void(0)" onclick="addProductToWishlist({{$product->id}},1,'{{$product->name}}',{{$product->regular_price}})" class="btn btn-solid">
                                         <i class="fa fa-bookmark fz-16 me-2"></i>
                                         <span>Wishlist</span>
                                     </a>
                                     <!-- <a href="javascript:void(0)" onclick="event.preventDefault();document.getElementById('addtocart').submit();" id="cartEffect" class="btn btn-solid hover-solid btn-animation"> -->
                                     <a href="javascript:void(0)" onclick="addProductToCart({{$product->id}},'{{$product->name}}',{{$product->regular_price}})" id="cartEffect" class="btn btn-solid hover-solid btn-animation">
-                                    <!-- <a href="javascript:void(0)" onclick="addProductToCart({{$product->id}},'{{$product->name}}',1,{{$product->regular_price}})" class="addtocart-btn"> -->
+                                        <!-- <a href="javascript:void(0)" onclick="addProductToCart({{$product->id}},'{{$product->name}}',1,{{$product->regular_price}})" class="addtocart-btn"> -->
                                         <i class="fa fa-shopping-cart"></i>
                                         <span>Add To Cart</span>
                                         <!-- <form id="addtocart" method="post" action="{{route('cart.store')}}">
@@ -208,6 +208,22 @@
                                     </a>
 
                                 </div>
+                                @else
+                                <div class="product-buttons">
+                                    <a href="javascript:void(0)" onclick="outOfStock()" class="btn btn-solid">
+                                        <i class="fa fa-bookmark fz-16 me-2"></i>
+                                        <span>Wishlist out</span>
+                                    </a>
+
+                                    <a href="javascript:void(0)" onclick="outOfStock()" class="btn btn-solid hover-solid btn-animation">
+
+                                        <i class="fa fa-shopping-cart"></i>
+                                        <span>Add To Cart out</span>
+
+                                    </a>
+
+                                </div>
+                                @endif
 
                                 <ul class="product-count shipping-order">
                                     <li>
@@ -810,7 +826,7 @@
                                 </div>
                             </div>
                             <div class="product-details">
-                                <div class="rating-details">
+                                <!-- <div class="rating-details">
                                     <span class="font-light grid-content">Cupiditate Minus</span>
                                     <ul class="rating mt-0">
                                         <li>
@@ -829,7 +845,7 @@
                                             <i class="fas fa-star"></i>
                                         </li>
                                     </ul>
-                                </div>
+                                </div> -->
                                 <div class="main-price">
                                     <a href="{{route('shop.product.details',['slug'=>$rproduct->slug])}}" class="font-default">
                                         <h5>{{$rproduct->name}}</h5>
@@ -870,41 +886,73 @@
     // }
 
     function addProductToCart(id, name, price) {
-                        $.ajax({
-                            type: 'POST',
-                            url: "{{route('cart.store')}}",
-                            data: {
-                                "_token": "{{ csrf_token() }}",
-                                id: id,
-                                name: name,
-                                quantity:document.getElementById('prdQtity').value,
-                                price: price
-                            },
-                            success: function(data) {
-                                if (data.status == 200) {
-                                    getCartWishlistCount();
-                                    $.notify({
-                                        icon: "fa fa-check",
-                                        title: "success",
-                                        message: "item successfully added to your cart !"
-                                    });
-                                }
-                            }
-                        });
-                    }
+        $.ajax({
+            type: 'POST',
+            url: "{{route('cart.store')}}",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                id: id,
+                name: name,
+                quantity: document.getElementById('prdQtity').value,
+                price: price
+            },
+            success: function(data) {
+                if (data.status == 200) {
+                    getCartWishlistCount();
+                    $.notify({
+                        icon: "fa fa-check",
+                        title: "success",
+                        message: "item successfully added to your cart !"
+                    });
+                }
+            }
+        });
+    }
 
-                    function getCartWishlistCount() {
-                        $.ajax({
-                            type: 'GET',
-                            url: "{{route('shop.cart.wishlist.count')}}",
-                            success: function(data) {
-                                if (data.status == 200) {
-                                    $("#cart-count").html(data.cartCount);
-                                    $("#wishlist-count").html(data.wishlistCount);
-                                }
-                            }
-                        });
-                    }
+    function addProductToWishlist(id, name, quantity, price) {
+        $.ajax({
+            type: 'POST',
+            url: "{{route('wishlist.store')}}",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                id: id,
+                name: name,
+                quantity: quantity,
+                price: price
+            },
+            success: function(data) {
+                console.log(data);
+                if (data.status == 200) {
+                    getCartWishlistCount();
+                    $.notify({
+                        icon: "fa fa-check",
+                        title: "success",
+                        message: "item successfully added to your wishlist !"
+                    });
+                }
+            }
+        });
+    }
 
+    function getCartWishlistCount() {
+        $.ajax({
+            type: 'GET',
+            url: "{{route('shop.cart.wishlist.count')}}",
+            success: function(data) {
+                if (data.status == 200) {
+                    $("#cart-count").html(data.cartCount);
+                    $("#wishlist-count").html(data.wishlistCount);
+                }
+            }
+        });
+    }
+
+    function outOfStock() {
+        $.notify({
+            icon: "fa fa-warning",
+            title: "Warning",
+            message: "Oops, this product is out of stock!"
+        });
+    }
 </script>
 @endpush

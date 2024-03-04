@@ -110,7 +110,7 @@
         </div>
         <div class="row">
             <div class="col-md-12 text-end">
-                <a href="javascript:void(0)" onclick="clearWishlist()">Clear All fclose Items</a>
+                <a href="javascript:void(0)" onclick="clearWishlist()">Clear All Items</a>
             </div>
         </div>
         @else

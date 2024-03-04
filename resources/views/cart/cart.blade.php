@@ -64,8 +64,15 @@
                                     <div class="col">
                                         <div class="qty-box">
                                             <div class="input-group">
-                                                <!-- <input type="number" id="newprdqtity" name="quantity"  onchange="updateQuantity({{$item->rowId}})" class="form-control input-number" value=""> -->
-                                                <input type="number" id="newprdqtity" name="quantity" data-rowid="{{$item->rowId}}" onchange="updateQuantity(this)" class="form-control input-number" value="{{$item->qty}}">
+                                            <form id="updateForm">
+                                                    @csrf  
+                                                    @method('put')
+                                                    <input type="number" min="1" id="valeurMobile" class="form-control input-number" data-rowid="{{$item->rowId}}" name="quantity" value="{{$item->qty}}" min="0" max="100">
+                                                  
+                                                    <input type="hidden" id="rowId" name="rowId" value="{{$item->rowId}}" />
+                                                </form>
+                                               
+                                                                                    
                                             </div>
                                         </div>
                                     </div>
@@ -87,12 +94,19 @@
                             <td>
                                 <div class="qty-box">
                                     <div class="input-group">
-                                        <input type="number" name="quantity" onchange="updateQuantity(this)" data-rowid="{{$item->rowId}}" class="form-control input-number" value="{{$item->qty}}">
+                                        <input id="valeur{{$item->rowId}}" type="number" min="1" name="quantity" onchange="updateQuantity('{{$item->rowId}}' ,{{$item->price}})"  data-rowid="{{$item->rowId}}" class="form-control input-number" value="{{$item->qty}}">
+                                        <!-- <form id="updateForm">
+                                                    @csrf  
+                                                    @method('put')
+                                                    <input type="number" id="valeur" class="form-control input-number" data-rowid="{{$item->rowId}}" name="quantity" value="{{$item->qty}}" min="0" max="100">
+                                                  
+                                                    <input type="hidden" id="rowId" name="rowId" value="{{$item->rowId}}" />
+                                                </form> -->
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                <h2 class="td-color">${{$item->subtotal()}}</h2>
+                                <h2 id="subTotal{{$item->rowId}}" class="td-color">${{$item->subtotal()}} </h2>
                             </td>
                             <td>
                                 <a href="javascript:void(0)" onclick="removeItemFromCart('{{$item->rowId}}')">
@@ -108,7 +122,7 @@
                 <div class="row">
                     <div class="col-sm-7 col-5 order-1">
                         <div class="left-side-button text-end d-flex d-block justify-content-end">
-                            <a href="javascript:void(0)" class="text-decoration-underline theme-color d-block text-capitalize">clear
+                            <a href="javascript:void(0)" onclick="clearCart()" class="text-decoration-underline theme-color d-block text-capitalize">clear
                                 all items</a>
                         </div>
                     </div>
@@ -123,38 +137,45 @@
 
             <div class="cart-checkout-section">
                 <div class="row g-4">
-                    <div class="col-lg-4 col-sm-6">
+                    <div class="col-lg-4 col-sm-3">
                         <div class="promo-section">
-                            <form class="row g-3">
+                            <div id="couponForm" class="row g-3">
                                 <div class="col-7">
-                                    <input type="text" class="form-control" id="number" placeholder="Coupon Code">
+                                    <input type="text" class="form-control" id="couponCode" placeholder="Coupon Code">
                                 </div>
                                 <div class="col-5">
-                                    <button class="btn btn-solid-default rounded btn">Apply Coupon</button>
+                                    <button onclick="applyCoupon()" class="btn btn-solid-default rounded btn">Apply Coupon</button>
                                 </div>
-                            </form>
+</div>
                         </div>
                     </div>
 
                     <div class="col-lg-4 col-sm-6 ">
                         <div class="checkout-button">
-                            <a href="checkout" class="btn btn-solid-default btn fw-bold">
-                                Check Out <i class="fas fa-arrow-right ms-1"></i></a>
+                            <a href="javascript:void(0)" onclick="checkout()"  class="btn btn-solid-default btn fw-bold">
+                                Check Out 1 <i class="fas fa-arrow-right ms-1"></i></a>
                         </div>
+    
                     </div>
+                    <div class="col-lg-6 col-sm-4 ">
+                   <!-- start form -->
+   
 
-                    <div class="col-lg-4">
+                    <!-- end form  -->
+                    </div>
+                    <div class="col-lg-6">
                         <div class="cart-box">
                             <div class="cart-box-details">
                                 <div class="total-details">
                                     <div class="top-details">
                                         <h3>Cart Totals</h3>
-                                        <h6>Sub Total <span>${{Cart::instance('cart')->subtotal()}}</span></h6>
-                                        <h6>Tax <span>${{Cart::instance('cart')->tax()}}</span></h6>
-                                        <h6>Total <span>${{Cart::instance('cart')->total()}}</span></h6>
+                                        <h6>Sub Total <span id="subTotal4">${{Cart::instance('cart')->subtotal() }}</span></h6>
+                                        <h6>Tax <span  id="tax">${{Cart::instance('cart')->tax()}}</span></h6>
+                                        <h6 id="discountpercentageTitle" style="display: none;">Percentage Discount <span  id="percentage"></span></h6>
+                                        <h6 id="totalCart">Total <span id="total">${{Cart::instance('cart')->total()}}</span></h6>
                                     </div>
                                     <div class="bottom-details">
-                                        <a href="checkout">Process Checkout</a>
+                                        <a href="{{route('shop.checkout')}}">Process Checkout</a>
                                     </div>
                                 </div>
                             </div>
@@ -174,9 +195,9 @@
         @endif
     </div>
 </section>
-<form id="updateCartQty" action="{{route('cart.update')}}" method="POST">
-    @csrf
-    @method('put')
+<form id="updateCartQty">
+    <!-- @csrf
+    @method('put') -->
     <input type="hidden" id="rowId" name="rowId" />
     <input type="hidden" id="quantity" name="quantity" />
 </form>
@@ -185,62 +206,206 @@
     @method('delete')
     <input type="hidden" id="rowId_D" name="rowId" />
 </form>
+<form id="clearCart" action="{{route('cart.clear')}}" method="POST">
+    @csrf
+    @method('delete')
+</form>
+<form id="checkoutForm" action="{{route('shop.checkout')}}" method="POST">
+    @csrf
+    @method('POST')
+<input type="hidden" id="codecpn" name="total" value="" />
+    
+</form>
 @endsection
 @push('scripts')
 <script>
-    function updateQuantity(qty) {
-        $('#rowId').val($(qty).data('rowid'));
-        $('#quantity').val($(qty).val());
-        $('#updateCartQty').submit();
+    // $(document).ready(function() {
+    //   $('#valeur').on('input', function() {
+    //     var valeur = parseInt($(this).val());
+    //     updateQuantity(valeur);
+    //   });
+    //   $('#valeurMobile').on('input', function() {
+    //     var valeur = parseInt($(this).val());
+    //     updateQuantity(valeur);
+    //   });
+function updateQuantity(rowid , price) {
+
+    var quantity = $('#valeur' + rowid).val();
+
+        console.log(rowid ,quantity );
+        $('#subTotal'+rowid).html('$'+($('#valeur' + rowid).val()) * (price)  +'.00');
+        $.ajax({
+   
+   url: "{{route('cart.update')}}",
+   header:{
+      'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+    },
+   method: "PUT",
+   dataType: 'json',
+   data: {
+         "_token": "{{ csrf_token() }}",
+         contentType:'application/json',
+         rowid: rowid,
+         quantity: quantity
+        
+                     },
+   success: function(response) {
+     getCartTotal();
+     console.log(response);
+    
+
+     
+   },
+   error:function(err){
+    console.log(err)
+   }
+ });
+
     }
+      function submitQuantity(rowid,quantity) {
+        $.ajax({
+   
+          url: "{{route('cart.update')}}",
+          method: "POST",
+          dataType: 'json',
+          data: {
+                "_token": "{{ csrf_token() }}",
+                rowid: rowid,
+                quantity: quantity
+               
+                            },
+          success: function(response) {
+            console.log("quantity",response);
+            getCartTotal();
+            console.log(response);
+            
+          }
+        });
+      }
+    // });
+
+    function clearCart() {
+        $("#clearCart").submit();
+    
+    }
+
+
+    function checkout() {
+  
+        var couponCode = $('#couponCode').val();
+        // $("#checkoutForm").submit();    
+        var input = $("<input>")
+            .attr("type", "hidden")
+            .attr("name", "totadl")
+            .val(couponCode);
+
+        // Append the input field to the form
+        $("#checkoutForm").append(input);
+
+        // Submit the form
+        $("#checkoutForm").submit();
+//         $.ajax({
+   
+//         url: "{{route('shop.checkout')}}",
+//         method: "POST",
+//         dataType: 'json',
+//         data: {
+//          "_token": "{{ csrf_token() }}",
+//          couponCode: couponCode,
+        
+//                      },
+//    success: function(response) {
+     
+//      console.log(response);
+     
+//         }
+//     });
+    }
+
+  
+
+    function getCartTotal() {
+                        $.ajax({
+                            type: 'GET',
+                            url: "{{route('shop.cart.total')}}",
+                            success: function(data) {
+                                console.log("my data",data);
+                                if (data.status == 200) {
+                                    $("#total").html(data.total);
+                                    $("#tax").html(data.tax);
+                                    $("#subTotal").html(data.subTotal);
+                                    $("#subTotal4").html(data.subTotal);
+                                }
+                            }
+                        });
+                    }
+  
+    
     function removeItemFromCart(rowId)
         {
             $('#rowId_D').val(rowId);
             $('#deleteFromCart').submit();
         }  
-        // function updateQuantity(qty) {
-        //     console.log(document.getElementById('newprdqtity').value);
-        //     console.log(qty);
+
+        function applyCoupon() {
+    var couponCode = $('#couponCode').val();
+
+    $.ajax({
+        url: "{{ route('apply.coupon') }}",
+        type: "POST",
+        data: {
+            '_token': '{{ csrf_token() }}',
+            'couponCode': couponCode
+        },
+        success: function(response) {
+            // prc =  response[0].price
+            // console.log(response.status);
             
-                        // $.ajax({
-                        //     type: 'POST',
-                        //     url: "{{route('cart.update')}}",
-                        //     data: {
-                        //         "_token": "{{ csrf_token() }}",
-                        //         rowId: 1,
-                        //         quantity: 2,
-                        //     },
-                        //     success: function(data) {
-                        //         console.log(data);
-                        //         if (data.status == 200) {
-                        //             $("#cart-count").html(data.cartCount);
-                        //             $("#wishlist-count").html(data.wishlistCount);
-                        //         }
-                        //     }
-                        // });
-                    // }
-        
-    // function updateQuantity(id) {
-    //                     $.ajax({
-    //                         type: 'POST',
-    //                         url: "{{route('cart.update')}}",
-    //                         data: {
-    //                             "_token": "{{ csrf_token() }}",
-    //                             rowId: id,
-    //                             quantity: 2,
-    //                         },
-    //                         success: function(data) {
-    //                             console.log(data);
-    //                             // if (data.status == 200) {
-                                
-    //                             //     $.notify({
-    //                             //         icon: "fa fa-check",
-    //                             //         title: "success",
-    //                             //         message: "quantity successfully updated !"
-    //                             //     });
-    //                             // }
-    //                         }
-    //                     });
-    //                 }        
+            if(response.status == 200){
+                var couponValue = response[0].coupon.value;
+                var originalPrice =  response[0].originalPrice;
+                var total = (originalPrice - couponValue).toFixed(2);
+                if(total<=0 ){
+                    $.notify({
+                icon: "fa fa-check",
+                title: "info",
+                message: "please chose more than one article !",
+               
+            });
+
+            $("#percentage").html("0%");
+            $("#total").html(response[0].originalPrice);
+            
+            $("h6#discountpercentageTitle").hide();
+                }else{
+                localStorage.setItem('couponValue', response[0].coupon.code);
+                $("#total").html(total);
+                $("#percentage").html(response[0].percentageDiscount + "%");
+                $("h6#discountpercentageTitle").show();
+                }
+            // $("#percentage").html(response[0].coupon.value);
+            
+        }else if(response.status == 400){
+          
+        //   console.log(prc);
+            $.notify({
+                icon: "fa fa-check",
+                title: "error",
+                message: "this coupon is incorrect !"
+            });
+
+            $("#percentage").html("0");
+            $("#total").html(response.price);
+            
+            $("h6#discountpercentageTitle").hide();
+        }
+          
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+        }
+    });
+}
+            
 </script>
 @endpush

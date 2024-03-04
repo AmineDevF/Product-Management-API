@@ -80,6 +80,10 @@ class AppController extends Controller
 //     }
 
 public function index(){
-    return view('products.index');
+
+    $products = Product::whereNotNull('sale_price')->limit(12)->get();
+    $categories = Category::get();
+    // dd($products);
+    return view('products.index', ['products'=>$products , 'categories'=>$categories]);
 }
 }

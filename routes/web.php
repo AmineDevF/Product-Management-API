@@ -21,19 +21,26 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/',[AppController::class,'index'])->name('app.index');
 Route::get('/test',[AppController::class,'test'])->name('app.test');
-
+Route::post('/checkout',[ShopController::class,'checkout'])->name('shop.checkout');
+Route::get('/checkout/success', [ShopController::class, 'success'])->name('checkout.success');
+Route::get('/checkout/cancel', [ShopController::class, 'cancel'])->name('checkout.cancel');
 Route::post('/registerform', [AuthController::class, 'register'])->name('register.form');
 Route::post('/loginform', [AuthController::class, 'login'])->name('login.form');
 Route::get('/register', [AuthController::class, 'registerurl'])->name('register');
 Route::get('/login', [AuthController::class, 'loginurl'])->name('login');
 Route::get('/shop',[ShopController::class,'index'])->name('shop.index');
+Route::get('/serch',[ShopController::class,'search'])->name('product.search');
 Route::get('/product/{slug}',[ShopController::class,'productDetials'])->name('shop.product.details');
 Route::get('/cart-wishlist-count',[ShopController::class,'getCartAndWishlistCount'])->name('shop.cart.wishlist.count');
+Route::get('/cart-total',[ShopController::class,'getCartTotal'])->name('shop.cart.total');
 Route::get('/cart',[CarteController::class,'index'])->name('cart.index');
+Route::get('/precess/checkout',[CarteController::class,'check'])->name('cart.precess');
 Route::post('/cart/store', [CarteController::class, 'addToCart'])->name('cart.store');
 Route::put('/cart/update', [CarteController::class, 'updateCart'])->name('cart.update');
+Route::post('/apply-coupon', [CarteController::class, 'applyCoupon'])->name('apply.coupon');
+
 Route::delete('/cart/remove', [CarteController::class, 'removeItem'])->name('cart.remove');
-// Route::delete('/cart/remove', [CarteController::class, 'removeItem'])->name('cart.remove');
+Route::delete('/cart/clear', [CarteController::class, 'clearCart'])->name('cart.clear');
 Route::post('/wishlist/add',[WishlistController::class,'addProductToWishlist'])->name('wishlist.store');
 Route::get('/wishlist',[WishlistController::class,'getWishlistedProducts'])->name('wishlist.list');
 Route::delete('/wishlist/remove',[WishlistController::class,'removeProductFromWishlist'])->name('wishlist.remove');

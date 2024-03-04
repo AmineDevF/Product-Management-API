@@ -305,7 +305,12 @@
                 </div>
                 <!-- end sidbar filter -->
                 <div class="row g-sm-4 g-3 row-cols-lg-4 row-cols-md-3 row-cols-2 mt-1 custom-gy-5 product-style-2 ratio_asos product-list-section">
+                @if($products->isEmpty())
+                 <h5 class="text-center" style="color: red;">No products available!.</h5>
+                 
+                @else
                     @foreach ($products as $product)
+                  
                     <div>
                         <div class="product-box">
                             <div class="img-wrapper">
@@ -328,7 +333,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="javascript:void(0)">
+                                            <a href="{{route('shop.product.details',['slug'=>$product->slug])}}">
                                                 <i data-feather="eye"></i>
                                             </a>
                                         </li>
@@ -343,7 +348,7 @@
                             <div class="product-details">
                                 <div class="rating-details">
                                     <span class="font-light grid-content">{{$product->category->name}}</span>
-                                    <ul class="rating mt-0">
+                                    <!-- <ul class="rating mt-0">
                                         <li>
                                             <i class="fas fa-star theme-color"></i>
                                         </li>
@@ -359,7 +364,7 @@
                                         <li>
                                             <i class="fas fa-star"></i>
                                         </li>
-                                    </ul>
+                                    </ul> -->
                                 </div>
                                 <div class="main-price">
                                     <a href="{{route('shop.product.details',['slug'=>$product->slug])}}" class="font-default">
@@ -375,8 +380,11 @@
                             </div>
                         </div>
                     </div>
+
                     @endforeach
+                    @endif
                 </div>
+                <h1 id="#searchResults"></h1>
                 {{$products->links("pagination.default")}}
 
                 <form id="updateCartQty" action="{{route('cart.update')}}" method="POST">
@@ -394,6 +402,38 @@
                     <input type="hidden" id="categories" name="categories" value="{{$q_categories}}" />
                     <input type="hidden" name="prange" id="prange" value="" />
                 </form>
+
+    
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Shop Section end -->
+    <!-- Subscribe Section Start -->
+    <section class="subscribe-section section-b-space">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-6">
+                    <div class="subscribe-details">
+                        <h2 class="mb-3">Subscribe Our News</h2>
+                        <h6 class="font-light">Subscribe and receive our newsletters to follow the news about our fresh
+                            and fantastic Products.</h6>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 mt-md-0 mt-3">
+                    <div class="subsribe-input">
+                        <div class="input-group">
+                            <input type="text" class="form-control subscribe-input" placeholder="Your Email Address">
+                            <button class="btn btn-solid-default" type="button">Button</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Subscribe Section End -->
+    <div id="qvmodal"></div>
                 @endsection
                 @push('scripts')
                 <script>
@@ -447,6 +487,7 @@
                         $("#frmFilter").submit();
                     }
 
+                  
                     function addProductToWishlist(id, name, quantity, price) {
                         $.ajax({
                             type: 'POST',
@@ -515,5 +556,7 @@
                             }
                         });
                     }
+
+                    
                 </script>
                 @endpush

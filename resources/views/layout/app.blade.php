@@ -211,12 +211,12 @@
                                 </ul>
                             </div>
                             <div class="search-full">
-                                <form method="GET" class="search-full" action="http://localhost:8000/search">
+                                <form method="GET" class="search-full"  action="{{ route('product.search') }}">
                                     <div class="input-group">
                                         <span class="input-group-text">
                                             <i data-feather="search" class="font-light"></i>
                                         </span>
-                                        <input type="text" name="q" class="form-control search-type" placeholder="Search here..">
+                                        <input id="searchInput" type="text" name="q" class="form-control search-type" placeholder="Search here..">
                                         <span class="input-group-text close-search">
                                             <i data-feather="x" class="font-light"></i>
                                         </span>
@@ -282,14 +282,14 @@
                             </div>
                             <ul class="contact-lists" style="clear:both;">
                                 <li>
-                                    <span><b>phone:</b> <span class="font-light"> +1 0000000000</span></span>
+                                    <span><b>phone:</b> <span class="font-light"> +2126233434</span></span>
                                 </li>
                                 <li>
                                     <span><b>Address:</b><span class="font-light"> NIT, Faridabad, Haryana,
-                                            India</span></span>
+                                            youssoufia</span></span>
                                 </li>
                                 <li>
-                                    <span><b>Email:</b><span class="font-light"> contact@surfsidemedia.in</span></span>
+                                    <span><b>Email:</b><span class="font-light"> contact@youcode-shop.yo</span></span>
                                 </li>
                             </ul>
                         </div>
@@ -396,28 +396,28 @@
                             <li class="font-dark">We accept:</li>
                             <li>
                                 <a href="javascript:void(0)">
-                                    <img src="assets/images/payment-icon/1.jpg" class="img-fluid blur-up lazyload" alt="payment icon">
+                                    <img src="{{ asset('assets/images/payment-icon/1.jpg')}}" class="img-fluid blur-up lazyload" alt="payment icon">
                                 </a>
                             </li>
                             <li>
                                 <a href="javascript:void(0)">
-                                    <img src="assets/images/payment-icon/2.jpg" class="img-fluid blur-up lazyload" alt="payment icon">
+                                    <img src="{{ asset('assets/images/payment-icon/2.jpg')}}" class="img-fluid blur-up lazyload" alt="payment icon">
                                 </a>
                             </li>
                             <li>
                                 <a href="javascript:void(0)">
-                                    <img src="assets/images/payment-icon/3.jpg" class="img-fluid blur-up lazyload" alt="payment icon">
+                                    <img src="{{ asset('assets/images/payment-icon/3.jpg')}}" class="img-fluid blur-up lazyload" alt="payment icon">
                                 </a>
                             </li>
                             <li>
                                 <a href="javascript:void(0)">
-                                    <img src="assets/images/payment-icon/4.jpg" class="img-fluid blur-up lazyload" alt="payment icon">
+                                    <img src="{{ asset('assets/images/payment-icon/4.jpg')}}" class="img-fluid blur-up lazyload" alt="payment icon">
                                 </a>
                             </li>
                         </ul>
                     </div>
                     <div class="col-md-6">
-                        <p class="mb-0 font-dark">© 2024, Youcode coine.</p>
+                        <p class="mb-0 font-dark">© 2024, Youcode shop.</p>
                     </div>
                 </div>
             </div>
@@ -449,6 +449,28 @@
         $(function() {
             $('[data-bs-toggle="tooltip"]').tooltip()
         });
+
+//         function searchProducts() {
+//     var query = $('#searchInput').val();
+
+//     $.ajax({
+//         url: "{{ route('product.search') }}",
+//         method: 'GET',
+//         data: { query: query },
+//         success: function(response) {
+//             // Update the search results on the page
+//             // For example, append the results to a div
+//             $('#searchResults').empty(); // Clear previous results
+//             $.each(response, function(index, product) {
+//                 $('#searchResults').append('<div>' + product.name + '</div>');
+//             });
+//         },
+//         error: function(xhr) {
+//             console.log(xhr.responseText);
+//         }
+//     });
+// }
+
     </script>
     @stack('scripts')
 
