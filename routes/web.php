@@ -1,11 +1,14 @@
 <?php
 
 use App\Http\Controllers\AppController;
+use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CarteController;
+use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\WishlistController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,15 +22,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/',[AppController::class,'index'])->name('app.index');
-Route::get('/test',[AppController::class,'test'])->name('app.test');
-Route::post('/checkout',[ShopController::class,'checkout'])->name('shop.checkout');
-Route::get('/checkout/success', [ShopController::class, 'success'])->name('checkout.success');
-Route::get('/checkout/cancel', [ShopController::class, 'cancel'])->name('checkout.cancel');
+// email verification
+
+Route::controller(VerificationController::class)->group(function() {
+    Route::get('/email/verify', 'notice')->name('verification.notice');
+    Route::get('/email/verify/{id}/{hash}', 'verify')->name('verification.verify');
+    Route::post('/email/resend', 'resend')->name('verification.resend');
+});
+
+// authentification logique
+
 Route::post('/registerform', [AuthController::class, 'register'])->name('register.form');
 Route::post('/loginform', [AuthController::class, 'login'])->name('login.form');
 Route::get('/register', [AuthController::class, 'registerurl'])->name('register');
 Route::get('/login', [AuthController::class, 'loginurl'])->name('login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// shop store after authentification
+Route::middleware(['auth', 'verified'])->group(function() {
+
+Route::get('/',[AppController::class,'index'])->name('app.index');  
+Route::get('/test',[AppController::class,'test'])->name('app.test');
+Route::post('/checkout',[ShopController::class,'checkout'])->name('shop.checkout');
+Route::get('/checkout/success', [ShopController::class, 'success'])->name('checkout.success');
+Route::get('/checkout/cancel', [ShopController::class, 'cancel'])->name('checkout.cancel');
 Route::get('/shop',[ShopController::class,'index'])->name('shop.index');
 Route::get('/serch',[ShopController::class,'search'])->name('product.search');
 Route::get('/product/{slug}',[ShopController::class,'productDetials'])->name('shop.product.details');
@@ -38,7 +56,6 @@ Route::get('/precess/checkout',[CarteController::class,'check'])->name('cart.pre
 Route::post('/cart/store', [CarteController::class, 'addToCart'])->name('cart.store');
 Route::put('/cart/update', [CarteController::class, 'updateCart'])->name('cart.update');
 Route::post('/apply-coupon', [CarteController::class, 'applyCoupon'])->name('apply.coupon');
-
 Route::delete('/cart/remove', [CarteController::class, 'removeItem'])->name('cart.remove');
 Route::delete('/cart/clear', [CarteController::class, 'clearCart'])->name('cart.clear');
 Route::post('/wishlist/add',[WishlistController::class,'addProductToWishlist'])->name('wishlist.store');
@@ -46,12 +63,15 @@ Route::get('/wishlist',[WishlistController::class,'getWishlistedProducts'])->nam
 Route::delete('/wishlist/remove',[WishlistController::class,'removeProductFromWishlist'])->name('wishlist.remove');
 Route::delete('/wishlist/clear',[WishlistController::class,'clearWishlist'])->name('wishlist.clear');
 Route::post('/wishlist/move-to-cart',[WishlistController::class,'moveToCart'])->name('wishlist.move.to.cart');
+Route::get('/my-account',[AuthController::class,'index'])->name('user.account');
 // Route::view('/login',"auth.login")->name('login');
 // Route::view('/register',"welcome")->name('register');
 
-Route::middleware('auth')->group(function(){
-    Route::get('/my-account',[AuthController::class,'index'])->name('user.index');
 });
+
+// Route::middleware('auth')->group(function(){
+//     Route::get('/my-account',[AuthController::class,'index'])->name('user.index');
+// });
 
 Route::middleware(['auth','auth.admin'])->group(function(){
     Route::get('/admin',[AuthController::class,'admin'])->name('admin.index');

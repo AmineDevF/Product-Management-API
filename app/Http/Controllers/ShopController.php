@@ -14,6 +14,7 @@ use App\Models\Product;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Cart;
+use Illuminate\Support\Facades\Auth;
 use Mollie\Laravel\Facades\Mollie;
 use Stripe\Price;
 
@@ -315,8 +316,8 @@ class ShopController extends Controller
             'amount' => number_format($t, 2, '.', ''),
             'status' => PaymentStatus::Pending,
             'type' => 'cc',
-            'created_by' => 1,
-            'updated_by' => 1,
+            'created_by' => auth()->id(),
+            'updated_by' => auth()->id(),
             'session_id' => $payment->id
         ];
         Transaction::create($paymentData);
@@ -343,6 +344,8 @@ class ShopController extends Controller
           
             if ($order->status === 'unpaid') {
                 $order->status = 'paid';
+                $order->created_by = auth()->id();
+                $order->updated_by = auth()->id();
                 $order->save();
                 $transaction->status = 'paid';
                 $transaction->save();

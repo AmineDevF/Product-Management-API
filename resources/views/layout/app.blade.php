@@ -187,7 +187,7 @@
                                                 </li>
                                                 @else
                                                 <li>
-                                                    <a href="{{route('user.index')}}" class="d-block">My Account</a>
+                                                    <a href="{{route('user.account')}}" class="d-block">My Account</a>
                                                 </li>
                                                 @endif
                                                 <li>

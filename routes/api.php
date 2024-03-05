@@ -41,8 +41,8 @@ Route::post('/login', [AuthController::class, 'login']);
 // email verificationn otification
 
 
-Route::post('/email/verification-notification', [EmailVerificationController::class, 'sendVerificationEmail'])->middleware('auth:sanctum');
-Route::get('/verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify')->middleware('auth:sanctum');
+// Route::post('/email/verification-notification', [EmailVerificationController::class, 'sendVerificationEmail'])->middleware('auth:sanctum');
+// Route::get('/verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify')->middleware('auth:sanctum');
 
 // product crud 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -58,3 +58,5 @@ Route::apiResource('carts', CartController::class)->except(['update', 'index']);
 Route::apiResource('orders', OrderController::class)->except(['update', 'destroy','store'])->middleware('auth:api');
 Route::post('/cartspro/', [ CartController::class ,'addProducts']);
 Route::post('/carts/{cartKey}/checkout', [CartController::class, 'checkout']);
+
+// Route::post('/registerform', [AuthController::class, 'register'])->name('register.form');

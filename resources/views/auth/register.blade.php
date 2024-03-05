@@ -26,7 +26,8 @@
 <div class="login-section">
     <div class="materialContainer">
         <div class="box">
-            <form method="POST" action="{{route('register')}}">
+            <form method="POST" action="{{route('register.form')}}">
+             
                 @csrf
                 <div class="login-title">
                     <h2>Register</h2>
@@ -34,25 +35,25 @@
 
                 <div class="input">
                     <label for="name">Name</label>
-                    <input type="text" id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required="" autofocus="" autocomplete="name">
+                    <input type="text" id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')"  autofocus="" autocomplete="name">
                     @error('name') <span class="text-danger mt-3">{{$message}} </span> @enderror
                 </div>
 
                 <div class="input">
                     <label for="emailname">Email Address</label>
-                    <input type="email" id="emailname" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required="" autocomplete="username">
+                    <input type="email" id="emailname" class="block mt-1 w-full" type="email" name="email" :value="old('email')"  autocomplete="username">
                     @error('email') <span class="text-danger mt-3">{{$message}} </span> @enderror
                 </div>
 
                 <div class="input">
                     <label for="pass">Password</label>
-                    <input type="password" id="pass" class="block mt-1 w-full" name="password" required="" autocomplete="new-password">
+                    <input type="password" id="pass" class="block mt-1 w-full" name="password"  autocomplete="new-password">
                     @error('password') <span class="text-danger mt-3">{{$message}} </span> @enderror
                 </div>
 
                 <div class="input">
                     <label for="compass">Confirm Password</label>
-                    <input type="password" id="compass" class="block mt-1 w-full" name="password_confirmation" required="" autocomplete="new-password">
+                    <input type="password" id="compass" class="block mt-1 w-full" name="password_confirmation"  autocomplete="new-password">
                 </div>
 
                 <div class="button login">

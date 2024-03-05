@@ -63,10 +63,11 @@
 <div class="login-section">
     <div class="materialContainer">
         <div class="box">
-            <form method="POST" action="{{route('login')}}">
+            <form method="POST" action="{{route('login.form')}}">
                 @csrf
                 <div class="login-title">
                     <h2>Login</h2>
+                  
                 </div>
                 <div class="input">
                     <label for="name">Username</label>
