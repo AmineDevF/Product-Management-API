@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegistrationRequest;
+use Cart;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -24,7 +26,21 @@ class AuthController extends Controller
 
        public function index()
        {
-              return view("users.index");
+              $user = auth()->user();
+              // $items = Order::where('created_by', $user->id)->get();
+              $orders = Order::where('created_by',$user->id)->get();
+              // foreach ($orders as $order){
+              //        dd($order->items[0]->product->name);
+              //    foreach ($order->items as $item){
+              //        // dd($item);
+              // }    
+              // }
+              // dd($orders);
+              $wishlistItems = Cart::instance("wishlist")->content();
+              $totalorder = Order::where('created_by',$user->id)->count();
+              $wishlistCount = Cart::instance('wishlist')->content()->count();
+              $totalUnpaiedOrder = Order::where('created_by',$user->id)->where('status', 'unpaid')->count();
+              return view("users.index",["user"=>$user,"totalorder"=>$totalorder ,"totalUnpaiedOrder"=>$totalUnpaiedOrder,"wishlistCount" => $wishlistCount , "orders"=>$orders , "wishlistItems"=>$wishlistItems]);
        }
        public function admin()
        {
@@ -102,4 +118,14 @@ class AuthController extends Controller
               // Optionally, you can redirect the user to a specific route after logout
               return redirect('/')->with('status', 'You have been logged out.');
        }
+
+       public function delete(Request $request)
+    {
+        $user = $request->user(); 
+        $user->delete();
+        
+        auth()->logout();
+
+        return redirect('/')->with('message', 'Your account has been deleted.');
+    }
 }

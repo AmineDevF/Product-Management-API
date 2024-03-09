@@ -81,7 +81,7 @@
                     @error('password') <span class="text-danger mt-3">{{$message}}</span> @enderror
                 </div>
 
-                <a href="javascript:void(0)" class="pass-forgot">Forgot your password?</a>
+                <a href="{{ route('forget.password.get') }}" class="pass-forgot">Forgot your password?</a>
 
                 <div class="button login">
                     <button type="submit">

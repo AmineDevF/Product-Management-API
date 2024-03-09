@@ -11,7 +11,36 @@ use SebastianBergmann\CodeCoverage\Report\Xml\Totals;
 
 class AppController extends Controller
 {
-// public function test(){
+
+public function test(){
+    $events =  Product::
+    limit(5)
+    ->get();
+    // dd($product[0]);
+    $catprd = [];
+    // foreach ($product as $pd){
+
+    //     $catprd[] =  $pd->category;
+    // }
+    // dd($catprd);
+    return view('test',["events"=>$events]);
+    // category
+}
+public function search(Request $request){
+    // dd($request);
+    $keyword = $request->input('keyword');
+
+    $products = Product::when($keyword, function ($query) use ($keyword) {
+        return $query->where('name', 'like', '%' . $keyword . '%');
+    })->paginate(5);
+
+
+    if ($request->ajax()) {
+        return view('pagination', compact('products'))->render();
+    }
+
+    return view('test', compact('products'));
+}
 //     // $total = Cart::instance('cart')->total();
 //     $total = Cart::instance('cart')->subtotal();
 //     dd($total);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Helpers\CartHelpers;
+use App\Mail\NewOrderEmail;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Coupon;
@@ -12,11 +13,15 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Cart;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Mollie\Laravel\Facades\Mollie;
 use Stripe\Price;
+use Mail; 
 
 class ShopController extends Controller
 {
@@ -290,8 +295,8 @@ class ShopController extends Controller
             'status' => OrderStatus::Unpaid,
             'discount' => $coupon_price ? $coupon_price['value'] : 0,
             'tax' =>  $taxcart,
-            'created_by' => 1,
-            'updated_by' => 1,
+            'created_by' =>  auth()->id(),
+            'updated_by' =>  auth()->id(),
         ];
 
         $order = Order::create($orderData);
@@ -361,6 +366,11 @@ class ShopController extends Controller
                
             }
             $items = $order->items;
+            
+            // send mail after payment confirmation 
+            $adminUsers = User::where('role', "admin")->get();
+            $userEmail = auth()->user()->email;
+            Mail::to($userEmail)->send(new NewOrderEmail($order , $items , $transaction));
            
           
             Cart::instance('cart')->destroy();
@@ -373,7 +383,7 @@ class ShopController extends Controller
             return redirect()->route('checkout.cancel');
         }
     }
-
+    
     public function cancel()
     {
         echo "Payment is cancelled.";

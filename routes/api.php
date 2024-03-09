@@ -1,11 +1,17 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController as ApiAuthController;
+use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\AuthController;
+
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RouleController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,9 +27,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::prefix('admin')->middleware(['auth:sanctum'])->group(function () {
  
@@ -34,9 +40,30 @@ Route::prefix('admin')->middleware(['auth:sanctum'])->group(function () {
 // Route::get('/panel', [RouleController::class, 'dashboard']);
 });
 
+Route::middleware(['auth:sanctum','isAdmin'])->group(function(){
+
+Route::get('/user', [ApiAuthController::class, 'getUser']);
+Route::get('/dashboard/customers-count', [DashboardController::class, 'activeCustomers']);
+Route::get('/dashboard/products-count', [DashboardController::class, 'activeProducts']);
+Route::get('/dashboard/orders-count', [DashboardController::class, 'paidOrders']);
+Route::get('/dashboard/income-amount', [DashboardController::class, 'totalIncome']);
+Route::get('/dashboard/orders-by-country', [DashboardController::class, 'ordersByCountry']);
+Route::get('/dashboard/latest-customers', [DashboardController::class, 'latestCustomers']);
+Route::get('/dashboard/latest-orders', [DashboardController::class, 'latestOrders']);
+Route::get('/orders', [DashboardController::class, 'ordrin']);    
+Route::get('orders/{order}', [DashboardController::class, 'view']);    
+Route::apiResource('products', ProductController::class);
+Route::apiResource('categories', CategoryController::class)->except('show');
+Route::get('/countries', [CategoryController::class, 'countries']);
+Route::get('/categories/tree', [CategoryController::class, 'getAsTree']);
+Route::apiResource('users', UserController::class);
+Route::apiResource('customers', CustomerController::class);
+Route::post('/logout', [ApiAuthController::class, 'logout']);
+});
+
 
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [ApiAuthController::class, 'login']);
 
 // email verificationn otification
 
@@ -46,7 +73,6 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // product crud 
 Route::middleware(['auth:sanctum'])->group(function () {
-Route::resource('/products', ProductController::class);
 Route::post('/image',[ProductController::class, 'imageStore']);
 Route::delete('/force_delete_product/{id}',[ProductController::class, 'forceDelete']);
 Route::get('/trached_product',[ProductController::class, 'onlyTrachedProduct']);
@@ -55,7 +81,7 @@ Route::get('/trached_product',[ProductController::class, 'onlyTrachedProduct']);
 // cart  && order
 
 Route::apiResource('carts', CartController::class)->except(['update', 'index']);
-Route::apiResource('orders', OrderController::class)->except(['update', 'destroy','store'])->middleware('auth:api');
+// Route::apiResource('orders', OrderController::class)->except(['update', 'destroy','store'])->middleware('auth:api');
 Route::post('/cartspro/', [ CartController::class ,'addProducts']);
 Route::post('/carts/{cartKey}/checkout', [CartController::class, 'checkout']);
 

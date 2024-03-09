@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AppController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CarteController;
@@ -29,6 +30,14 @@ Route::controller(VerificationController::class)->group(function() {
     Route::get('/email/verify/{id}/{hash}', 'verify')->name('verification.verify');
     Route::post('/email/resend', 'resend')->name('verification.resend');
 });
+
+
+//forget password
+
+Route::get('forget-password', [ForgotPasswordController::class, 'showForgetPasswordForm'])->name('forget.password.get');
+Route::post('forget-password', [ForgotPasswordController::class, 'submitForgetPasswordForm'])->name('forget.password.post'); 
+Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('reset.password.get');
+Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPasswordForm'])->name('reset.password.post');
 
 // authentification logique
 
@@ -64,6 +73,7 @@ Route::delete('/wishlist/remove',[WishlistController::class,'removeProductFromWi
 Route::delete('/wishlist/clear',[WishlistController::class,'clearWishlist'])->name('wishlist.clear');
 Route::post('/wishlist/move-to-cart',[WishlistController::class,'moveToCart'])->name('wishlist.move.to.cart');
 Route::get('/my-account',[AuthController::class,'index'])->name('user.account');
+Route::delete('/delete-account', [AuthController::class,'delete'])->name('delete-account');
 // Route::view('/login',"auth.login")->name('login');
 // Route::view('/register',"welcome")->name('register');
 
@@ -73,9 +83,13 @@ Route::get('/my-account',[AuthController::class,'index'])->name('user.account');
 //     Route::get('/my-account',[AuthController::class,'index'])->name('user.index');
 // });
 
-Route::middleware(['auth','auth.admin'])->group(function(){
+Route::middleware(['auth','isAdmin'])->group(function(){
     Route::get('/admin',[AuthController::class,'admin'])->name('admin.index');
 });
 // Route::view('/amine',"home");
 
 Route::resource('products', ProductController::class);
+// Route::get('/test',[AppController::class,'test'])->name('app.test');
+// Route::get('/index/get', [AppController::class,'search']);
+Route::get('/search', [AppController::class,'search'])->name('products.search');
+
